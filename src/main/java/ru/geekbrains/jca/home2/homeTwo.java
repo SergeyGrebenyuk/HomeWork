@@ -3,6 +3,7 @@ package ru.geekbrains.jca.home2;
 public class homeTwo {
 
     public static void main(String[] args) {
+
         replacement(10,2);                           // выполнение метода по 1п. задания
         fillingArray();                                               // выполнение метода по 2п. задания
         multiplicationByTwo();                                        // выполнение метода по 3п. задания
@@ -15,6 +16,7 @@ public class homeTwo {
 
     }
     //метод заполнения массива псевдослучайными числами по заданным параметрам
+
         public static int[] generationArr(int lenghtArr,int ValuesArr){
             int[] intArr = new int[lenghtArr];
             for (int i = 0; i < intArr.length; i++) {                  //формируем целочисленный массив
@@ -115,7 +117,7 @@ public class homeTwo {
             if (sumLeft > sumRight) {
                 right -= 1;
                 sumRight = sumRight + intArr[right];
-            }else if (sumLeft < sumRight && sumLeft != sumRight) {
+            }else if (sumLeft < sumRight) {
                 left += 1;
                 sumLeft = sumLeft + intArr[left];
             }
