@@ -14,12 +14,17 @@ public class homeFour {
     public static void main(String[] args) {
         gameMap();
         printGameMap();
-        human();
-        AI();
-        gamePlay();
-        checkWinLine();
-        chekcWinDiag()
+        for (int i = 1; i <= 4; i++) {
+            human();
+            AI();
+            checkWinLine();
+            chekcWinDiag();
+            if (checkWinLine()==true || chekcWinDiag()==true ) {
+                System.out.println("Победа человека");
+                break
+            }
 
+        }
     }
 
     public static void gameMap() {
@@ -57,7 +62,7 @@ public class homeFour {
         humY = sc.nextInt();
             map[humY-1][humX-1]='x';
        System.out.println(humX + "  " + humY);
-        printGameMap();
+        //printGameMap();
     }
 
     public static void AI() {
@@ -69,7 +74,7 @@ public class homeFour {
         map[aiX][aiY]='0';
         printGameMap();
     }
-    public static void checkWinLine() {
+    public static boolean checkWinLine() {
         int rightX = 0;
         int downX = 0;
         int right0 = 0;
@@ -82,11 +87,10 @@ public class homeFour {
                 if (map[x][y] == '0') down0 += 1;
             }
         }
-        if (rightX  == 3||downX ==3) System.out.println("Победа игрока");
-        else if (right0 == 3||down0) System.out.println("Победа чкомпьютера");
-        else System.out.println("Ничья");
+        if (rightX  == 3|| downX ==3 || right0==3 || down0==3 ) return true;
+        return false;
     }
-    public static void chekcWinDiag() {
+    public static boolean chekcWinDiag() {
         int rightDiagX=0;
         int rightDiag0=0;
         int leftDiagX=0;
@@ -96,20 +100,9 @@ public class homeFour {
             if (map[y][y] == '0') rightDiag0 += 1;
             if (map[y][map.length - 1 - y] == 'x') leftDiagX += 1;
             if (map[y][map.length - 1 - y] == '0') leftDiag0 += 1;
-
-            if (rightDiagX  == 3||leftDiagX ==3) System.out.println("Победа игрока");
-            else if (rightDiag0 == 3||leftDiag0) System.out.println("Победа чкомпьютера");
-            else System.out.println("Ничья");
         }
-    }
+        if (rightDiagX  == 3||leftDiagX ==3 || rightDiag0==3 || leftDiag0==3 ) return true;
+        return false;
 
-    public static void gamePlay() {
-        for (int i = 1; i <= 4; i++) {
-            human();
-            AI();
-            checkWinLine();
-            chekcWinDiag();
-        }
     }
-
 }
