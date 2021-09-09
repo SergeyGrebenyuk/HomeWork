@@ -4,32 +4,35 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class homeFour {
-    public static char[][] map;
-    public static final int size= 5;
-    public static final int DOTS_TO_WIN = 4;
-    public static int humX;
-    public static int humY;
-    public static int shiftX;
-    public static int shiftY;
-
+    public static char[][] map;                         // игровое поле
+    public static final int size= 4;                    // размер игрового поля
+    public static final int DOTS_TO_WIN = 4;            //количественно выигрышных фишек
     public static Scanner sc = new Scanner(System.in);
     public static Random rnd= new Random();
-
 
     public static void main(String[] args) {
         gameMap();                              //создаем карту игры
         printGameMap();                         //печатаем карту игры
         while (true) {
             human();                            //ход человека
-            if (checkWin('x')) break;        //проверяем ни выигрыш после хода человека
+            if (checkWin('x')) break;        //проверяем на выигрыш после хода человека
+
+            if(mapFull()==true) {
+               System.out.println("Ничья");
+               printGameMap();
+               break;
+           }
             AI();                               //ход компьютера
             if (checkWin('0')) break;       //проверяем ни выигрыш после хода компьютера
-        }do
+
+            if(mapFull()==true) {
+                System.out.println("Ничья");
+                printGameMap();
+                break;
+            }
+        }
     }
-
-
-
-    public static void gameMap() {
+    public static void gameMap() {               //создаем игровое поле
         map=new char[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -38,7 +41,7 @@ public class homeFour {
         }
     }
 
-    public static void printGameMap() {
+    public static void printGameMap() {         // Вывод на экран игрового поля
         for (int i=1;i<=size;i++){
             System.out.print("   " +i+ " " );
         }
@@ -57,8 +60,17 @@ public class homeFour {
         }
     }
 
-    public static void human() {
-        //int humX, humY;
+    public static boolean mapFull() {                   //проверки заполненности игрового поля
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (map[i][j]=='*') return false;
+            }
+        }
+        return true;
+    }
+
+    public static void human() {                        // Ход человека
+        int humX, humY;
         System.out.println("Введите координаты:   ");
         do{
             humX = sc.nextInt();
@@ -68,7 +80,7 @@ public class homeFour {
         map[humY - 1][humX - 1] = 'x';
     }
 
-    public static void AI() {
+    public static void AI() {                           // Ход компьютера
         int aiX,aiY;
         do{
             aiX = rnd.nextInt(size);
@@ -77,34 +89,43 @@ public class homeFour {
         map[aiX][aiY]='0';
         printGameMap();
     }
-    private static boolean checkWin(char n) {                       //проверка на выигрыш общий
-        if (checkWinLine(n)|| checkWinDiag(n)) {
-            if (n=='x') System.out.println("Победа человека");
-            else System.out.println("Победа компьютера");
-            printGameMap();
-            return true;
+    //проверка на выигрыш общий. Проверка блоками размером равным количеству фишек для победы
+    // Для поля 5х5 и 4 фишки, проверяется блоками 4х4 со сдвигом, т.е. будет проведено 4 проверки блоками 4х4
+    private static boolean checkWin(char n) {
+        int shiftX,shiftY;
+        shiftX = map[0].length - DOTS_TO_WIN + 1;
+        shiftY = map.length - DOTS_TO_WIN + 1;
+        for (int i = 0; i < shiftX; i++) {
+            for (int j = 0; j < shiftY; j++) {
+                if (checkWinLine(n,i,j) || checkWinDiag(n,i,j)) {
+                    if (n == 'x') System.out.println("Победа человека");
+                    else System.out.println("Победа компьютера");
+                    printGameMap();
+                    return true;
+                }
+            }
         }
         return false;
     }
 
-    public static boolean checkWinLine(char n) {                    //проверка на выигрыш по линиям
-        for (int x = 0; x < map.length; x++) {
+    public static boolean checkWinLine(char n,int i, int j) {                    //проверка на выигрыш по линиям
+        for (int x = 0; x <DOTS_TO_WIN; x++) {
             int right = 0;
             int down = 0;
-            for (int y = 0; y < map.length; y++) {
-                if (map[x][y] == n) right += 1;
-                if (map[y][x] == n) down += 1;
+            for (int y = 0; y <DOTS_TO_WIN; y++) {
+                if (map[x+i][y+j] == n) right += 1;
+                if (map[y+j][x+i] == n) down += 1;
             }
             if (right == DOTS_TO_WIN  || down == DOTS_TO_WIN ) return true;
         }
         return false;
     }
-    public static boolean checkWinDiag(char n) {                       //проверка на выигрыш по диагоналям
+    public static boolean checkWinDiag(char n,int i,int j) {                       //проверка на выигрыш по диагоналям
         int rightDiag=0;
         int leftDiag=0;
-        for (int y = 0; y < map.length; y++) {
-            if (map[y][y] == n) rightDiag += 1;
-            if (map[y][map.length - 1 - y] == n) leftDiag += 1;
+        for (int y = 0; y < DOTS_TO_WIN; y++) {
+            if (map[y+i][y+j] == n) rightDiag += 1;
+            if (map[y+i][DOTS_TO_WIN - 1 - y] == n) leftDiag += 1;
         }
         return rightDiag == DOTS_TO_WIN || leftDiag == DOTS_TO_WIN ;
     }
