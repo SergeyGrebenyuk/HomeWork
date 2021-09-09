@@ -5,27 +5,29 @@ import java.util.Scanner;
 
 public class homeFour {
     public static char[][] map;
-    public static final int size= 3;
-    public static final int DOTS_TO_WIN = 3;
+    public static final int size= 5;
+    public static final int DOTS_TO_WIN = 4;
+    public static int humX;
+    public static int humY;
+    public static int shiftX;
+    public static int shiftY;
+
     public static Scanner sc = new Scanner(System.in);
     public static Random rnd= new Random();
 
 
     public static void main(String[] args) {
-        gameMap();
-        printGameMap();
-        for (int i = 1; i <= 4; i++) {
-            human();
-            AI();
-            checkWinLine();
-            chekcWinDiag();
-            if (checkWinLine()==true || chekcWinDiag()==true ) {
-                System.out.println("Победа человека");
-                break
-            }
-
-        }
+        gameMap();                              //создаем карту игры
+        printGameMap();                         //печатаем карту игры
+        while (true) {
+            human();                            //ход человека
+            if (checkWin('x')) break;        //проверяем ни выигрыш после хода человека
+            AI();                               //ход компьютера
+            if (checkWin('0')) break;       //проверяем ни выигрыш после хода компьютера
+        }do
     }
+
+
 
     public static void gameMap() {
         map=new char[size][size];
@@ -56,13 +58,14 @@ public class homeFour {
     }
 
     public static void human() {
-        int humX,humY;
+        //int humX, humY;
         System.out.println("Введите координаты:   ");
-        humX = sc.nextInt();
-        humY = sc.nextInt();
-            map[humY-1][humX-1]='x';
-       System.out.println(humX + "  " + humY);
-        //printGameMap();
+        do{
+            humX = sc.nextInt();
+            humY = sc.nextInt();
+            if (map[humY - 1][humX - 1] != '*') System.out.println("Клетка занята! Повторите ввод координат:    ");
+        }while (map[humY - 1][humX - 1] != '*');
+        map[humY - 1][humX - 1] = 'x';
     }
 
     public static void AI() {
@@ -74,35 +77,35 @@ public class homeFour {
         map[aiX][aiY]='0';
         printGameMap();
     }
-    public static boolean checkWinLine() {
-        int rightX = 0;
-        int downX = 0;
-        int right0 = 0;
-        int down0 = 0;
-        for (int x = 0; x < map.length - 1; x++) {
-            for (int y = 0; y < map.length - 1; y++) {
-                if (map[y][x] == 'x') rightX += 1;
-                if (map[y][x] == '0') right0 += 1;
-                if (map[x][y] == 'x') downX += 1;
-                if (map[x][y] == '0') down0 += 1;
-            }
+    private static boolean checkWin(char n) {                       //проверка на выигрыш общий
+        if (checkWinLine(n)|| checkWinDiag(n)) {
+            if (n=='x') System.out.println("Победа человека");
+            else System.out.println("Победа компьютера");
+            printGameMap();
+            return true;
         }
-        if (rightX  == 3|| downX ==3 || right0==3 || down0==3 ) return true;
         return false;
     }
-    public static boolean chekcWinDiag() {
-        int rightDiagX=0;
-        int rightDiag0=0;
-        int leftDiagX=0;
-        int leftDiag0=0;
-        for (int y = 0; y < map.length - 1; y++) {
-            if (map[y][y] == 'x') rightDiagX += 1;
-            if (map[y][y] == '0') rightDiag0 += 1;
-            if (map[y][map.length - 1 - y] == 'x') leftDiagX += 1;
-            if (map[y][map.length - 1 - y] == '0') leftDiag0 += 1;
-        }
-        if (rightDiagX  == 3||leftDiagX ==3 || rightDiag0==3 || leftDiag0==3 ) return true;
-        return false;
 
+    public static boolean checkWinLine(char n) {                    //проверка на выигрыш по линиям
+        for (int x = 0; x < map.length; x++) {
+            int right = 0;
+            int down = 0;
+            for (int y = 0; y < map.length; y++) {
+                if (map[x][y] == n) right += 1;
+                if (map[y][x] == n) down += 1;
+            }
+            if (right == DOTS_TO_WIN  || down == DOTS_TO_WIN ) return true;
+        }
+        return false;
+    }
+    public static boolean checkWinDiag(char n) {                       //проверка на выигрыш по диагоналям
+        int rightDiag=0;
+        int leftDiag=0;
+        for (int y = 0; y < map.length; y++) {
+            if (map[y][y] == n) rightDiag += 1;
+            if (map[y][map.length - 1 - y] == n) leftDiag += 1;
+        }
+        return rightDiag == DOTS_TO_WIN || leftDiag == DOTS_TO_WIN ;
     }
 }
