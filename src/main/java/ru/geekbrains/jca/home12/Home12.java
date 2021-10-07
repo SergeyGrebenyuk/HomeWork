@@ -1,13 +1,19 @@
 package ru.geekbrains.jca.home12;
 
+import java.util.Arrays;
+
 public class Home12 {
-    private static final int size = 10000000;
+    private static final int size = 100000;
     private static final int half = size/2;
+    private static long a;
 
     public static void main(String[] args) {
+        a = System.currentTimeMillis();
         calculationMetod1();
+        System.out.println("Время выполнения расчета в одном потоке " + (System.currentTimeMillis() - a));
+        a = System.currentTimeMillis();
         calculationMetod2();
-
+        System.out.println("Время выполнения расчета в двух потоках: " + (System.currentTimeMillis() - a));
     }
 
     public static float[] calculation(float[] arr) {
@@ -19,9 +25,7 @@ public class Home12 {
     public static void calculationMetod1() {
         float[] arr = new float[size];
         for (int i = 0; i < arr.length; i++) arr[i] = 1.0f;
-        long a = System.currentTimeMillis();
         calculation(arr);
-        System.out.println("Время выполнения расчета в одном потоке " + (System.currentTimeMillis() - a));
     }
 
     public static void calculationMetod2() {
@@ -29,8 +33,6 @@ public class Home12 {
         float[] arr1 = new float[half];
         float[] arr2 = new float[half];
             for (int i = 0; i < arr.length; i++) arr[i] = 1.0f;
-
-        long a = System.currentTimeMillis();
             System.arraycopy(arr, 0, arr1, 0, half);
             System.arraycopy(arr, half, arr2, 0, half);
 
@@ -50,7 +52,6 @@ public class Home12 {
 
             System.arraycopy(arr1, 0, arr, 0, arr1.length);
             System.arraycopy(arr2, 0, arr, half, arr2.length);
-            System.out.println("Время выполнения расчета в двух потоках: " + (System.currentTimeMillis() - a));
    }
 
 }
